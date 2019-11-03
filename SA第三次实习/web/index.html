@@ -1,0 +1,639 @@
+
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <title>SOUP阿里邮箱推送</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css"  media="all">
+
+    <script src="layui/layui.js" charset="utf-8"></script>
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!--    <script src="rest.js" charset="utf-8"></script>-->
+    <script src="js/mysoup.js" charset="utf-8"></script>
+    <!-- <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css"> -->
+    <!-- <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+
+</head>
+<body>
+
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend style="margin-left: 400px;">SOUP邮件推送</legend>
+</fieldset>
+
+
+<form class="layui-form" action="" lay-filter="send">
+
+    <div class="layui-form-item" style="margin-left: 300px;">
+        <label class="layui-form-label">邮件地址</label>
+        <div class="layui-input-inline" style="width: 600px; ">
+            <input charset="utf-8" type="text" name="title1" lay-verify="title" autocomplete="off" placeholder="输入多个邮箱使用逗号隔开" class="layui-input" style =" width:400px;">
+<!--            <input charset="utf-8" type="text" name="title2" lay-verify="title" autocomplete="off" placeholder="请输入邮件地址，多个邮箱请使用逗号隔开！" class="layui-input" style =" width:150px;">-->
+
+        </div>
+    </div>
+
+
+    <div class="layui-form-item" >
+        <label class="layui-form-label" style="margin-left: 300px;">选择方式</label>
+        <div class="layui-input-block" style="margin-left: 300px;">
+            <input type="radio" name="module" value="soap" title="soap" checked="">
+            <input type="radio" name="module" value="rest" title="rest">
+        </div>
+    </div>
+
+
+    <div class="layui-form-item layui-form-text" style="margin-left: 300px;">
+        <label class="layui-form-label">邮件内容</label>
+        <div class="layui-input-block">
+            <textarea  class="layui-textarea" name="book1" style="width: 400px; height: 25px; " placeholder="请输入邮件标题！" style="margin-left: 300px;"></textarea>
+            <textarea  class="layui-textarea" name="book2" style="width: 400px; height: 300px; " placeholder="请输入邮件内容！" style="margin-left: 300px;"></textarea>
+
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-input-block" >
+            <button type="submit" class="layui-btn layui-btn-normal"  id="ssss" style="margin-left: 300px;">发送</button>
+
+        </div>
+    </div>
+</form>
+
+
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+
+        form.render();
+        form.render('radio');
+
+
+
+        layui.$('#ssss').on('click', function () {
+            var data = form.val('send');
+            if (data.title1.length === 0) {
+                console.log("失败了？2");
+                alert("消息不能为空");
+                return false;
+            }
+
+            if (data.module === "soap") {
+                console.log(SOAP_sendOne(data));
+                SOAP_sendOne(data);
+                // if (SOAP_validateEmailAddress(data) === "true") {
+                //
+                // }
+                // else {
+                //     alert("无效的电子邮件");
+                // }
+            }
+            else if (data.module === "rest") {
+
+                if (REST_validateEmailAddress(data) === "true") {
+                    REST_sendEmailBatch(data);
+                }
+                else {
+                    alert("无效的电子邮件");
+                }
+            }
+
+
+        });
+
+    });
+</script>
+
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns="http://www.w3.org/1999/html">-->
+<!--<head>-->
+
+
+<!--    <title>邮件发送系统</title>-->
+<!--    <meta charset="utf-8">-->
+<!--    <meta name="renderer" content="webkit">-->
+<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">-->
+
+<!--    <style>-->
+<!--        #addPost{-->
+<!--            border: 2px #5FB878;-->
+
+<!--            width:400px;-->
+<!--            height:100px;-->
+<!--            padding: 10px;-->
+
+<!--        }-->
+<!--        #addName{-->
+<!--            border: 2px deepskyblue;-->
+<!--            width:400px;-->
+<!--            height:100px;-->
+<!--            padding:10px;-->
+
+<!--        }-->
+<!--        #send{-->
+<!--            border: 2px pink;-->
+<!--            width:400px;-->
+<!--            height:100px;-->
+<!--            padding: 10px;-->
+
+<!--        }-->
+<!--    </style>-->
+<!--&lt;!&ndash;    <script src ="layui/lay/layui.js"></script>&ndash;&gt;-->
+<!--    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>-->
+<!--&lt;!&ndash;    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>&ndash;&gt;-->
+<!--&lt;!&ndash;    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>&ndash;&gt;-->
+<!--    <script src ="js/mysoup.js"></script>-->
+<!--&lt;!&ndash;    <script src = "layui/lay/modules/form.js"></script>&ndash;&gt;-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta charset="utf-8">-->
+<!--    <title>邮件发送系统</title>-->
+<!--    <link rel="stylesheet" href="layui/css/layui.css"  media="all">-->
+<!--    <script src ="js/layui.js"></script>-->
+
+<!--    <style type="text/css">-->
+
+<!--        .BIGlegend{-->
+<!--            margin-left:250px;-->
+
+<!--        }-->
+<!--        .fieldset1{-->
+<!--            margin-left:250px;-->
+<!--            margin-right: 250px;-->
+
+<!--        }-->
+<!--        .layui-elem-field {-->
+<!--            margin-left:250px;-->
+<!--            margin-right: 250px;-->
+
+<!--        }-->
+<!--        .layui-elem-field2{margin-bottom:10px;padding:3px;border-width:1px;border-style:solid}-->
+<!--        .layui-field-title{-->
+<!--            margin-right: 200px;-->
+<!--        }-->
+<!--        .layui-btn{-->
+<!--            margin-right: 300px;-->
+
+<!--        }-->
+<!--        .BIGlegend{-->
+<!--            margin-left: 200px;-->
+<!--            font-size:150%;-->
+<!--        }-->
+<!--        .site-demo-button {-->
+
+<!--            margin-right: 200px;-->
+
+<!--        }-->
+
+<!--        .layui-inputpost1{width:250px;height:30px;color:#666}-->
+<!--        .layui-inputpost2{width:150px;height:30px;color:#666}-->
+<!--        .layui-input3{width:150px;height:30px;color:#666}-->
+
+<!--        .layui-form-label2{float:left;display:block;padding:9px  15px;width:80px;font-weight:400;line-height:20px;text-align:right}-->
+<!--        .layui-input-block{margin-left:110px;left:-1px}-->
+<!--    </style>-->
+
+
+
+
+<!--</head>-->
+<!--<body>-->
+
+
+
+<!--&lt;!&ndash;<script>&ndash;&gt;-->
+
+
+
+
+<!--&lt;!&ndash;    // $(document).ready(function(){&ndash;&gt;-->
+<!--&lt;!&ndash;    //     $("button").click(function(){&ndash;&gt;-->
+<!--&lt;!&ndash;    //         $("p").hide();&ndash;&gt;-->
+<!--&lt;!&ndash;    //         alert("开始发送");&ndash;&gt;-->
+<!--&lt;!&ndash;    //&ndash;&gt;-->
+<!--&lt;!&ndash;    //         $.ajax({&ndash;&gt;-->
+<!--&lt;!&ndash;    //             type:"POST",&ndash;&gt;-->
+<!--&lt;!&ndash;    //             contentType:"text",&ndash;&gt;-->
+<!--&lt;!&ndash;    //             url:"http://localhost:8080/services/HelloWorld",&ndash;&gt;-->
+<!--&lt;!&ndash;    //             dataType:"html/xml",&ndash;&gt;-->
+<!--&lt;!&ndash;    //             data:'susususu',&ndash;&gt;-->
+<!--&lt;!&ndash;    //             success:function () {&ndash;&gt;-->
+<!--&lt;!&ndash;    //                 alert("返回的类型为"+typeof (data)+"内容为:"+data);&ndash;&gt;-->
+<!--&lt;!&ndash;    //                 $(".ajaxresult div:eq(0)").html("返回数据的类型为：" + typeof (data));&ndash;&gt;-->
+<!--&lt;!&ndash;    //                 $(".ajaxresult div:eq(1)").html("内容为：" + data);&ndash;&gt;-->
+<!--&lt;!&ndash;    //             }&ndash;&gt;-->
+<!--&lt;!&ndash;    //&ndash;&gt;-->
+<!--&lt;!&ndash;    //         })&ndash;&gt;-->
+<!--&lt;!&ndash;    //     });&ndash;&gt;-->
+<!--&lt;!&ndash;    // });&ndash;&gt;-->
+<!--&lt;!&ndash;<form >&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div id = "cantainter">&ndash;&gt;-->
+<!--&lt;!&ndash;        <h1>邮件发送系统</h1>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    <div id = "left">&ndash;&gt;-->
+<!--&lt;!&ndash;        <fieldset>&ndash;&gt;-->
+<!--&lt;!&ndash;            <legend>添加邮箱</legend>&ndash;&gt;-->
+<!--&lt;!&ndash;            <div id = "addPost">&ndash;&gt;-->
+<!--&lt;!&ndash;            <input type="text" name = "thePost" placeholder ="请输入邮箱地址">&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        </fieldset>&ndash;&gt;-->
+<!--&lt;!&ndash;        <fieldset>&ndash;&gt;-->
+<!--&lt;!&ndash;            <legend>填写内容</legend>&ndash;&gt;-->
+<!--&lt;!&ndash;            <div id = "addName">&ndash;&gt;-->
+<!--&lt;!&ndash;            <input  id="s1" type="text" name = "book" placeholder ="请输入发送内容">&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        </fieldset>&ndash;&gt;-->
+<!--&lt;!&ndash;        <fieldset>&ndash;&gt;-->
+<!--&lt;!&ndash;            <legend>发送</legend>&ndash;&gt;-->
+<!--&lt;!&ndash;            <div id = "send">&ndash;&gt;-->
+<!--&lt;!&ndash;            <button type="button" id = "sendmessage" onclick="myfunction()" >发送</button>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        </fieldset>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;</form>&ndash;&gt;-->
+
+
+
+
+<!--    &lt;!&ndash;</body>&ndash;&gt;-->
+
+
+
+
+<!--&lt;!&ndash;<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>&ndash;&gt;-->
+<!--&lt;!&ndash;<script>&ndash;&gt;-->
+<!--&lt;!&ndash;    $(document).ready(function(){&ndash;&gt;-->
+<!--&lt;!&ndash;        $("button").click(function(){&ndash;&gt;-->
+<!--&lt;!&ndash;           // $("p").hide();&ndash;&gt;-->
+<!--&lt;!&ndash;          //  alert("开始发送");&ndash;&gt;-->
+<!--&lt;!&ndash;            $.ajax({&ndash;&gt;-->
+<!--&lt;!&ndash;                type:"POST",&ndash;&gt;-->
+<!--&lt;!&ndash;                contentType:"text",&ndash;&gt;-->
+<!--&lt;!&ndash;                url:"http://localhost:8080/services/HelloWorld",&ndash;&gt;-->
+<!--&lt;!&ndash;                dataType:"html/xml",&ndash;&gt;-->
+<!--&lt;!&ndash;                data:'susususu',&ndash;&gt;-->
+<!--&lt;!&ndash;                success:function () {&ndash;&gt;-->
+<!--&lt;!&ndash;                    alert("返回的类型为"+typeof (data)+"内容为:"+data);&ndash;&gt;-->
+<!--&lt;!&ndash;                    $(".ajaxresult div:eq(0)").html("返回数据的类型为：" + typeof (data));&ndash;&gt;-->
+<!--&lt;!&ndash;                    $(".ajaxresult div:eq(1)").html("内容为：" + data);&ndash;&gt;-->
+<!--&lt;!&ndash;                }&ndash;&gt;-->
+
+<!--&lt;!&ndash;            })&ndash;&gt;-->
+<!--&lt;!&ndash;        });&ndash;&gt;-->
+<!--&lt;!&ndash;    });&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;    $('#ssss').click(function () {&ndash;&gt;-->
+<!--&lt;!&ndash;        index=index+1;&ndash;&gt;-->
+<!--&lt;!&ndash;        var flag=index;&ndash;&gt;-->
+<!--&lt;!&ndash;        mailList.push(flag);&ndash;&gt;-->
+<!--&lt;!&ndash;        $('#ssss').before("<div id=\"mail"+flag+"\">\n" +&ndash;&gt;-->
+<!--&lt;!&ndash;            "                <div class=\"input-group mb-3\">\n" +&ndash;&gt;-->
+<!--&lt;!&ndash;            "                    <input type=\"text\" class=\"form-control\" placeholder=\"Email\" id=\"name"+flag+"\" name=\"email\">\n" +&ndash;&gt;-->
+<!--&lt;!&ndash;            "                    <div class=\"input-group-append\">\n" +&ndash;&gt;-->
+<!--&lt;!&ndash;            "                        <span class=\"input-group-text\">@</span>\n" +&ndash;&gt;-->
+<!--&lt;!&ndash;            "                    </div>\n" +&ndash;&gt;-->
+<!--&lt;!&ndash;            "                    <input type=\"text\" class=\"form-control\" placeholder=\"example.com\" id=\"domain"+flag+"\" name=\"email\">\n" +&ndash;&gt;-->
+<!--&lt;!&ndash;            "                    <button type=\"button\" class=\"btn btn-warning deleteMail\" id=\"delete"+flag+"\">鉂�</button>" +&ndash;&gt;-->
+<!--&lt;!&ndash;            "                </div>\n" +&ndash;&gt;-->
+<!--&lt;!&ndash;            "            </div>");&ndash;&gt;-->
+<!--&lt;!&ndash;        $('#delete'+flag.toString()).click(function () {&ndash;&gt;-->
+<!--&lt;!&ndash;            mailList.remove(flag);&ndash;&gt;-->
+<!--&lt;!&ndash;            $('#mail'+flag.toString()).remove();&ndash;&gt;-->
+<!--&lt;!&ndash;        });&ndash;&gt;-->
+<!--&lt;!&ndash;    });&ndash;&gt;-->
+<!--&lt;!&ndash;</script>&ndash;&gt;-->
+
+
+
+<!--<script>-->
+
+<!--    layui.use(['form', 'layedit', 'laydate'], function () {-->
+<!--        var form = layui.form-->
+<!--            , layer = layui.layer-->
+<!--            , layedit = layui.layedit-->
+<!--            , laydate = layui.laydate;-->
+
+<!--        form.render();-->
+<!--        form.render('radio');-->
+
+
+
+
+<!--        layui.$('#ssss').on('click', function () {-->
+<!--            var data = form.val('send');-->
+<!--            if (data.title1.length === 0) {-->
+<!--                console.log("失败了？2");-->
+<!--                alert("消息不能为空");-->
+<!--                return false;-->
+<!--            }-->
+
+<!--            if (data.module === "soap") {-->
+<!--                console.log(SOAP_sendOne(data));-->
+<!--                SOAP_sendEmailBatch(data);-->
+<!--                // if (SOAP_validateEmailAddress(data) === "true") {-->
+<!--                //-->
+<!--                // }-->
+<!--                // else {-->
+<!--                //     alert("无效的电子邮件");-->
+<!--                // }-->
+<!--            }-->
+<!--            else if (data.module === "rest") {-->
+
+<!--                if (REST_validateEmailAddress(data) === "true") {-->
+<!--                    REST_sendEmailBatch(data);-->
+<!--                }-->
+<!--                else {-->
+<!--                    alert("无效的电子邮件");-->
+<!--                }-->
+<!--            }-->
+
+
+<!--        });-->
+
+<!--    });-->
+<!--    function myfunction(){-->
+<!--        //var u = document.getElementById("").value;-->
+<!--        // if(u == ""){-->
+<!--        //     console.log("不能为空");-->
+<!--        //     alert("不能为空哦");-->
+<!--        // }-->
+<!--        var data = form.var('send');-->
+<!--        console.log("data值为："+data.value);-->
+<!--        if(data.title1!= ""&& data.title2 != "") {-->
+<!--            alert("data为"+data.title1.value+data.title2.value);-->
+<!--        }-->
+<!--        if (data.module === "soap") {-->
+<!--            console.log(SOAP_sendOne(data));-->
+<!--            SOAP_sendEmailBatch(data);-->
+<!--            if (SOAP_validateEmailAddress(data) === "true") {-->
+<!--                SOAP_sendEmailBatch(data);-->
+<!--            }-->
+<!--            else {-->
+<!--                alert("无效的电子邮件");-->
+<!--            }-->
+<!--        }-->
+
+<!--    }-->
+<!--    function myfunction1() {-->
+<!--        var x = form.var('send');-->
+<!--        var k = document.getElementsByName("names");-->
+<!--        if(k.options.value == 1){-->
+<!--            var z = document.getElementsByName("title1");-->
+<!--            z.innerHTML = "2291146413";-->
+<!--            var y = document.getElementsByName("title2");-->
+<!--            y.innerHTML = "qq.com";-->
+<!--            alert("ok");-->
+<!--        }-->
+
+<!--    }-->
+
+
+<!--    // $.ajax({-->
+<!--    //     type: "post",-->
+<!--    //     contentType: "application/json",-->
+<!--    //     url: "http://localhost:8080/services/HelloWould",-->
+<!--    //     dataType:"html/xml",-->
+<!--    //     data: "testRequest="+from,-->
+<!--    //     success: function(data){-->
+<!--    //         alert(data.testResponse.myTest.username);-->
+<!--    //     }-->
+<!--    // });-->
+
+
+<!--    // function getXmlHttp(){-->
+<!--    //     var xmlHttp;-->
+<!--    //     if(window.XMLHttpRequest){-->
+<!--    //         xmlHttp = new XMLHttpRequest();-->
+<!--    //     }else {-->
+<!--    //         xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');-->
+<!--    //     }-->
+<!--    //     return xmlHttp;-->
+<!--    //-->
+<!--    // }-->
+<!--    // function webServices(url,action,data,success,error,complete,failed){-->
+<!--    //     var xmlHttp = getXmlHttp(); //获取XMLHttpRequest请求对象-->
+<!--    //     xmlHttp.open("POST",url+'/'+action,true);//异步请求数据-->
+<!--    //     xmlHttp.onreadystatechange = function () {-->
+<!--    //         if (xmlHttp.readyState == 4) {-->
+<!--    //             try {-->
+<!--    //                 if (xmlHttp.status == 200 && typeof (success) == 'function') {-->
+<!--    //                     success(xmlHttp.responseText);-->
+<!--    //                 }-->
+<!--    //                 else if ((xmlHttp.status / 100 == 4 || xmlHttp.status / 100 == 5) && typeof (error) == 'function') {-->
+<!--    //                     error(xmlHttp.responseText, xmlHttp.status);-->
+<!--    //                 }-->
+<!--    //                 else if (xmlHttp.status / 100 == 200 && typeof (complete) == 'function') {-->
+<!--    //                     complete(xmlHttp.responseText, xmlHttp.status);-->
+<!--    //                 }-->
+<!--    //                 else if (typeof (failed) == 'function') {-->
+<!--    //                     failed(xmlHttp.responseText, xmlHttp.status);-->
+<!--    //                 }-->
+<!--    //             }-->
+<!--    //             catch (e) {-->
+<!--    //             }-->
+<!--    //         }-->
+<!--    //         xmlHttp.setRequestHeader('Content-Type', 'application/json; charset=utf-8');-->
+<!--    //         xmlHttp.setRequestHeader('SOAPAction', action);-->
+<!--    //         xmlHttp.send(data);-->
+<!--    //     }-->
+<!--    //-->
+<!--    // }-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    //-->
+<!--    // var xhr = new XMLHttpRequest();-->
+<!--    // function wsConnection() {-->
+<!--    //     //创建XMLHttp的对象-->
+<!--    //-->
+<!--    //     //服务的地址-->
+<!--    //     var urlMsg = 'http://localhost:8080/services/HelloWorld?wsdl';-->
+<!--    //-->
+<!--    //     //请求体-->
+<!--    //     var soap = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:q0="http://score.it.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema' + 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><q0:sayHello> <arg0>aaa</arg0> <arg1>123</arg1></q0:sayHello></soapenv:Body> </soapenv:Envelope>';-->
+<!--    //-->
+<!--    //     //打开连接-true :表示为异步请求-->
+<!--    //     xhr.open('POST', urlMsg, true);-->
+<!--    //     xhr.crossDomain = true;-->
+<!--    //-->
+<!--    //     //重新设置头信息-->
+<!--    //     xhr.setRequestHeader("Content-Type", "text/xml;charset=utf-8");-->
+<!--    //-->
+<!--    //     //设置回调函数-->
+<!--    //     xhr.onreadystatechange = _back;-->
+<!--    //-->
+<!--    //     //发送请求-->
+<!--    //     xhr.send(soap);-->
+<!--    // }-->
+<!--    // function _back(){-->
+<!--    //     if(xhr.readyState==4){-->
+<!--    //         if(xhr.status==200){-->
+<!--    //             alert('成功响应');-->
+<!--    //             var ret = xhr.responseXML;-->
+<!--    //             var msg = ret.getElementsByTagName("return")[0];-->
+<!--    //             alert(msg.text)-->
+<!--    //         }-->
+<!--    //     }-->
+<!--    // }-->
+
+
+
+
+<!--    $(document).ready(function() {-->
+<!--        $("#button").click(function() {-->
+<!--            alert('你点我干嘛');-->
+<!--            // $.ajax({-->
+<!--            //     type: "POST",-->
+<!--            //     contentType: "application/json",-->
+<!--            //     url: "WebService1.asmx/GetWish",-->
+<!--            //     data: "{from:'sdsadasd '}",-->
+<!--            //     dataType: 'json',-->
+<!--            //     success: function(result) {-->
+<!--            //-->
+<!--            //         $('#layui-form-label').append(result.d);-->
+<!--            //     }-->
+<!--            // });-->
+<!--        });-->
+<!--    });-->
+<!--    //-->
+<!--    // layui.use('form', function(){-->
+<!--    //     var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功-->
+<!--    //-->
+<!--    //     //……-->
+<!--    //-->
+<!--    //     //但是，如果你的HTML是动态生成的，自动渲染就会失效-->
+<!--    //     //因此你需要在相应的地方，执行下述方法来进行渲染-->
+<!--    //     form.render();-->
+<!--    //     form.render("radio")-->
+<!--    // });-->
+<!--</script>-->
+
+
+<!--<form class="layui-form" action="" lay-filter="send">-->
+<!--<legend class="BIGlegend">发送邮件</legend>-->
+<!--<fieldset class="fieldset1">-->
+
+<!--        <div class = "layui-post">-->
+<!--            <label class="layui-form-label">输入地址</label>-->
+<!--            <input type="text" name="title1" lay-verify="title" autocomplete="off" placeholder="地址" class="layui-inputpost1">-->
+<!--            <label>+</label>-->
+<!--            <input type="text" name="title2" lay-verify="title" autocomplete="off" placeholder="后缀" class="layui-inputpost2">-->
+
+<!--        </div>-->
+
+
+
+<!--        <div class="layui-choose">-->
+<!--            <label class="layui-form-label">选择联系人</label>-->
+<!--             <div class="layui-input-inline">-->
+<!--            <select name="names" lay-verify="required" lay-search="" onclick="myfunction1()">-->
+<!--                <option value="">直接选择或搜索选择</option>-->
+<!--                <option value="1">自己</option>-->
+<!--                <option value="2">董少</option>-->
+<!--                <option value="3">yy</option>-->
+<!--&lt;!&ndash;                <option value="4">element</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="5">laytpl</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="6">upload</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="7">laydate</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="8">laypage</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="9">flow</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="10">util</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="11">code</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="12">tree</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="13">layedit</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="14">nav</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="15">tab</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="16">table</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="17">select</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="18">checkbox</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="19">switch</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                <option value="20">radio</option>&ndash;&gt;-->
+<!--            </select>-->
+
+<!--        </div>-->
+<!--</div>-->
+
+<!--        <div class="layui-form-item">-->
+<!--            <label class="layui-form-label">请输入标题</label>-->
+<!--            <div class="layui-input-block">-->
+<!--                <input type="text" name="book1" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">-->
+<!--                &lt;!&ndash; <button class="layui-btn site-demo-active" data-type="loading">添加</button> &ndash;&gt;-->
+<!--            </div>-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">请输入正文</label>-->
+<!--                <div class="layui-input-block">-->
+<!--                    <textarea placeholder="请输入正文"  name="book2" class="layui-textarea"></textarea>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--</fieldset>-->
+
+<!--<fieldset class="layui-elem-field">-->
+
+<!--    <fieldset class="change">-->
+<!--        <legend>选择接口</legend>-->
+<!--        <div class="layui-form-item">-->
+<!--            <label class="layui-form-label">发送方式</label>-->
+<!--            <form>-->
+<!--            <div class="layui-input-block">-->
+<!--                <input type="radio" name="module" value="soup" title="soup" checked="">-->
+<!--                <input type="radio" name="module" value="rest" title="rest" >-->
+<!--            </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </fieldset>-->
+<!--    <fieldset class="layui-elem-field2">-->
+<!--        <legend>点击上传</legend>-->
+<!--        <div class="site-demo-button" >-->
+<!--            <button class="layui-btn site-demo-active" data-type="loading" id = "ssss"  >发送</button>-->
+
+<!--        </div>-->
+<!--    </fieldset>-->
+
+<!--    </fieldset>-->
+<!--</form>-->
+<!--</body>-->
+<!--</html>-->
