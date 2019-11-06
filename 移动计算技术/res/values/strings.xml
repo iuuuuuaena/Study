@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MyRunApp</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">请上传头像</string>
+    <string name="nav_header_subtitle">选一个吧</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="this_is_run">点击开始跑步吧</string>
+    <string name="this_is_run_note">这里是跑步记录</string>
+    <string name="this_is_A">这里是加速度</string>
+    <string name="this_is_manage">这里是工具</string>
+
+</resources>

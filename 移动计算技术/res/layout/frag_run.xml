@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/run_relative">
+
+
+    <ImageButton
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/gril4" />
+    <!--<com.gcssloop.widget.ArcSeekBar-->
+        <!--android:id="@+id/arc_seek_bar"-->
+        <!--android:layout_width="280dp"-->
+        <!--android:layout_height="280dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_marginBottom="102dp"-->
+        <!--android:layout_toStartOf="@+id/go_paint"-->
+        <!--app:arc_colors="@array/arc_colors_default"-->
+        <!--app:arc_max="100"-->
+        <!--app:arc_open_angle="90"-->
+        <!--app:arc_progress="0"-->
+        <!--app:arc_rotate_angle="90"-->
+        <!--app:arc_thumb_color="#fff"-->
+        <!--app:arc_thumb_mode="STROKE"-->
+        <!--app:arc_thumb_radius="16dp"-->
+        <!--app:arc_thumb_shadow_color="#000000"-->
+        <!--app:arc_thumb_shadow_radius="3dp"-->
+        <!--app:arc_thumb_width="3dp"-->
+        <!--app:arc_width="40dp" />-->
+
+    <com.gcssloop.widget.ArcSeekBar
+        android:id="@+id/arc_seek_bar"
+        android:layout_width="316dp"
+        android:layout_height="307dp"
+        android:layout_centerInParent="true"
+        app:arc_colors="@array/arc_colors_default"
+        app:arc_max="100"
+        app:arc_open_angle="90"
+        app:arc_rotate_angle="90"
+        app:arc_shadow_radius="10dp"
+        app:arc_thumb_radius="16dp" />
+    <!--example.mac.myrunapp-->
+    <TextView
+        android:id="@+id/run_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="106dp"
+        android:text="@string/this_is_run"
+        android:textSize="40dp" />
+
+    <Button
+        android:id="@+id/run_button"
+        android:layout_width="356dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="72dp"
+        android:background="@drawable/btn_bg_red"
+        android:elevation="40dp"
+        android:gravity="center"
+        android:text="开始跑步" />
+
+    <Button
+        android:id="@+id/go_paint"
+        android:layout_width="43dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="11dp"
+        android:layout_marginTop="16dp"
+        android:elevation="30dp"
+        android:text="图" />
+
+    <TextView
+        android:id="@+id/stepView"
+        android:layout_width="154dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="279dp"
+        android:layout_marginEnd="112dp"
+        android:textColor="#ffffff"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:typeface="sans" />
+
+    <TextView
+        android:id="@+id/stepD"
+        android:layout_width="98dp"
+        android:layout_height="39dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/stepView"
+        android:textStyle="bold"
+        android:typeface="sans"
+        android:layout_marginEnd="143dp"
+        android:layout_marginTop="-280dp"
+        android:textColor="#ffffff"
+        android:textSize="26dp" />
+
+    <TextView
+        android:id="@+id/tttv"
+        android:layout_width="258dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="318dp"
+        android:text="你已经跑了"
+        android:textSize="25dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_step1"
+        android:layout_width="139dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tttv"
+        android:layout_below="@+id/tttv"
+        android:textSize="25dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_step2"
+        android:layout_width="139dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="119dp"
+        android:layout_marginTop="300dp"
+        android:textSize="25dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+</RelativeLayout>
